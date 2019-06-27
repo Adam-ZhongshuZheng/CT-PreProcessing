@@ -29,7 +29,7 @@ class NiiDealer:
         """Compute the center of the nii, using minimal enclosing circle from cv2
 
         Return:
-            the center
+            the center and the radius
         """
         center = []
         for i in range(self.img.shape[2]):
@@ -43,7 +43,7 @@ class NiiDealer:
             if len(cnts) > 0:
                 # find the largest contour in the mask, then use it to compute the minimum enclosing circle and centroid
                 c = max(cnts, key=cv2.contourArea)
-                ((x, y), radius) = cv2.minEnclosingCircle(c)
+                ((y, x), radius) = cv2.minEnclosingCircle(c)
                 center.append((int(x), int(y), i, radius))
 
         center = mean(center, axis=0)
@@ -69,7 +69,7 @@ class NiiDealer:
 
 
 def statics(directory):
-    """To Give the area and the length of all the nii space
+    """To Give the area and the weight of all the nii space
         
     Args:
         directory:

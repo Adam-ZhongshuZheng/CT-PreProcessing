@@ -15,10 +15,9 @@ import os
 
 
 class ReadDicomDir():
-    '''
-    Get the dicom and nii list and them into ndarray saved as .npy.
+    """Get the dicom and nii list and them into ndarray saved as .npy.
     Besides, Combine the img and the handycraft features
-    '''
+    """
 
     def __init__(self, directory, image_save_dir, label_save_dir, yon, bigpath=''):
         self.dire = directory
@@ -33,21 +32,21 @@ class ReadDicomDir():
         if not os.path.exists(path):
             os.makedirs(path)
 
-    def __write_nii(self, filename, savename):
-        img_nii = nib.load(filename)
-        img_nii_data = img_nii.get_data().astype('uint8')
-        img_nii_data = transform.resize(img_nii_data, (256, 256, 16))
-        # plt.imshow(img_nii_data[15,:,:])
-        # plt.show()
-        self.__check_dir(savename)
-        np.save(savename + '.npy', img_nii_data)
-        # print(img_nii_data.shape)
-        print(filename)
-        # input()
-        # img_nii_data = np.load(os.path.join(savename, filename + '.npy'))
-        # print(img_nii_data.shape)
-        # plt.imshow(img_nii_data[15,:,:])
-        # plt.show()
+    # def __write_nii(self, filename, savename):
+    #     img_nii = nib.load(filename)
+    #     img_nii_data = img_nii.get_data().astype('uint8')
+    #     img_nii_data = transform.resize(img_nii_data, (256, 256, 16))
+    #     # plt.imshow(img_nii_data[15,:,:])
+    #     # plt.show()
+    #     self.__check_dir(savename)
+    #     np.save(savename + '.npy', img_nii_data)
+    #     # print(img_nii_data.shape)
+    #     print(filename)
+    #     # input()
+    #     # img_nii_data = np.load(os.path.join(savename, filename + '.npy'))
+    #     # print(img_nii_data.shape)
+    #     # plt.imshow(img_nii_data[15,:,:])
+    #     # plt.show()
 
     def __write_3D_dicom(self, filename, savename):
         # filename = 'C:/Users/Hivot/Desktop/956481/956481Delayed phase'
