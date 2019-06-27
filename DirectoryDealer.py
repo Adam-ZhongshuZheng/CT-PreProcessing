@@ -24,7 +24,7 @@ class ReadDicomDir():
         self.bigpath = bigpath
         self.label_save_dir = label_save_dir
         self.image_save_dir = image_save_dir
-        self.default = ('0.0,' * 38) + '0.0\n'
+        self.default = ('0.0,' * 37) + '0.0\n'
         self.yon = yon
 
     def __check_dir(self, path):
@@ -32,31 +32,8 @@ class ReadDicomDir():
         if not os.path.exists(path):
             os.makedirs(path)
 
-    # def __write_nii(self, filename, savename):
-    #     img_nii = nib.load(filename)
-    #     img_nii_data = img_nii.get_data().astype('uint8')
-    #     img_nii_data = transform.resize(img_nii_data, (256, 256, 16))
-    #     # plt.imshow(img_nii_data[15,:,:])
-    #     # plt.show()
-    #     self.__check_dir(savename)
-    #     np.save(savename + '.npy', img_nii_data)
-    #     # print(img_nii_data.shape)
-    #     print(filename)
-    #     # input()
-    #     # img_nii_data = np.load(os.path.join(savename, filename + '.npy'))
-    #     # print(img_nii_data.shape)
-    #     # plt.imshow(img_nii_data[15,:,:])
-    #     # plt.show()
-
     def __write_3D_dicom(self, filename, savename):
-        # filename = 'C:/Users/Hivot/Desktop/956481/956481Delayed phase'
         # print(filename)
-        reader = sitk.ImageSeriesReader()
-        dicom_names = reader.GetGDCMSeriesFileNames(filename)
-        reader.SetFileNames(dicom_names)
-        image = reader.Execute()
-        image = sitk.GetArrayFromImage(image)
-        image = image.transpose((1, 2, 0))
         image = transform.resize(image, (256, 256, 16))
         self.__check_dir(savename)
         np.save(savename + '.npy', image)
@@ -96,11 +73,13 @@ class ReadDicomDir():
         return databook
 
     def run(self):
-        # walk the directory and read files to_ndarray
+        """walk the directory and read files to_ndarray
+        Need to rewrite the structure of the directory
+        """
 
         debug_count = 2  # for quick debug
 
-        condata = self.__get_condata('Condata.csv')
+        condata = self.__get_condata('Condata.csv')     # TODO: set the file path here
         # get the condata in the type of dictionary, with the index as key and others strings as value
 
         f = open(self.dire + ' datafile.csv', 'w')
@@ -146,10 +125,12 @@ class ReadDicomDir():
                     continue
 
                 self.__write_3D_dicom(dir_now_2, self.image_save_dir + '/' + save_path_2)
+                # TODO: the process here about the cut Dicom
+
                 for sub_filename in os.listdir(dir_now_2):
                     # This subfile is just for nii
                     if sub_filename.split('.')[-1] == 'gz' or sub_filename.split('.')[-1] == 'nii':
-                        self.__write_nii(dir_now_2 + '/' + sub_filename, self.label_save_dir + '/' + save_path_2)
+                        # self.__write_nii(dir_now_2 + '/' + sub_filename, self.label_save_dir + '/' + save_path_2)
 
                         if 'A' in filename:
                             Arter = os.path.join(self.image_save_dir, save_path_2 + '.npy') + ',' + os.path.join(
