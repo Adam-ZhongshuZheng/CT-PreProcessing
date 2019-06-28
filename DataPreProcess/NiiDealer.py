@@ -1,3 +1,13 @@
+# -*-coding:utf-8-*-
+
+########################################################################################################
+# This program is used for do the data regular on 3D Nii data
+# including: --> do the statics about the nii, including the thickness, area, center and radius.
+#
+# By Adam Mo
+# 6/15/2019
+########################################################################################################
+
 import numpy as np
 
 import cv2

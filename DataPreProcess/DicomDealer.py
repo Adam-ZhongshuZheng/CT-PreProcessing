@@ -1,12 +1,9 @@
 # -*-coding:utf-8-*-
 
 ########################################################################################################
-# This program is used for do the data regular on MVI data
-# including: --> turning the DICOM img and NII img into numpy -> .npy
-#            --> clean the EXCEL data
-#            --> provide a csv data for all data in order to used in deep network
-#            --> Cut the dicom into little blocks we may needed
-#            --> Compute the all sizes of the nii
+# This program is used for do the data regular on 3D Dicom data
+# including: --> do the process for the dicom CT image, including window center and resampling
+#            --> cut the 3D image to get a small 3D patch
 #
 # By Adam Mo
 # 6/13/2019
