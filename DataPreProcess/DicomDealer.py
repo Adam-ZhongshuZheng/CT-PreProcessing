@@ -134,7 +134,7 @@ class DicomDealer:
         """
         image = self.img
         spacing = np.array(
-            [self.dcmfile[0].SliceThickness, self.dcmfile[0].PixelSpacing[0], self.dcmfile[0].PixelSpacing[1]],
+            [self.dcmfile[0].PixelSpacing[0], self.dcmfile[0].PixelSpacing[1], self.dcmfile[0].SliceThickness],
             dtype=np.float32)
 
         resize_factor = spacing / new_spacing
@@ -145,11 +145,12 @@ class DicomDealer:
 
         image = scipy.ndimage.interpolation.zoom(image, real_resize_factor, mode='nearest')
 
+        self.img = image
         return image
 
 
 def main():
-    d = DicomDealer('C:\\Users\\Hivot\\Desktop\\Portal venous phase')    # 1070979Delayed phase-W
+    d = DicomDealer('Portal venous phase')    # 1070979Delayed phase-W
     print(len(d.dcmfile))
     fig, ax = plt.subplots(1, 3)
     ax0 = ax[0].imshow(d.dcmfile[10].pixel_array, cmap=plt.cm.gray)
@@ -167,7 +168,7 @@ def main():
 
     from NiiDealer import NiiDealer
 
-    dcmfile = NiiDealer('C:\\Users\\Hivot\\Desktop\\Portal venous phase\\1062674P.nii.gz')   # 1070979Delayed phase-W\\1070979d.nii
+    dcmfile = NiiDealer('Portal venous phase\\1062674P.nii.gz')   # 1070979Delayed phase-W\\1070979d.nii
     center = dcmfile.compute_center()[0]
 
     d.window_reset()

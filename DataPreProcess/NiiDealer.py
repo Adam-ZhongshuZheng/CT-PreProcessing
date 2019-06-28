@@ -134,8 +134,8 @@ def statics(directory):
 
 
 def main():
-    statics('D:\\Memory\\MVI\\MVI_reg\\Non-MVI ROI')
-    statics('D:\\Memory\\MVI\\MVI_reg\\MVI-ROI')
+    statics('Non-MVI ROI')
+    statics('MVI-ROI')
 
 
 if __name__ == '__main__':
