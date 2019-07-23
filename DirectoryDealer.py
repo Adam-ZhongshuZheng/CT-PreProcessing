@@ -30,7 +30,7 @@ class ReadDicomDir():
     """
 
     def __init__(self, directory, image_save_dir, label_save_dir, mvi,
-                 bigpath='D:\\Memory\\Year.JiHai\\Data\\MVI\\MVI_reg'):
+                 bigpath='MVI\\MVI_reg'):
         self.dire = directory
         self.bigpath = bigpath
         self.label_save_dir = label_save_dir
@@ -225,7 +225,7 @@ class ReadDicomDir():
 
 
 def main():
-    bigpath = 'D:\\Memory\\Year.JiHai\\Data\\MVI\\MVI_reg'
+    bigpath = 'Data\\MVI\\MVI_reg'
     mvipath = 'MVI-ROI'
     nonmvipath = 'Non-MVI ROI'
     ReadDicomDir(nonmvipath, 'ImageSaveRadiomics', 'LabelSaveRadiomics', '0', bigpath=bigpath).run()
