@@ -70,13 +70,35 @@ class ReadDicomDir():
         f.close()
         return databook
 
-    def deal_pair(self, d, n, savepath, filename):
+    def __check_center(self, center):
+        top = 462
+        buttom = 50
+        if center[0] > top:
+            center[0] = top
+        if center[0] < buttom:
+            center[0] = buttom
+        if center[1] > top:
+            center[1] = top
+        if center[1] < buttom:
+            center[1] = buttom
+        return center
+
+    def deal_pair(self, d, n, savepath, filename, move=(0,0,0)):
         # print(savepath)
 
         # debug:
         # fig, ax = plt.subplots(1, 4)
 
-        d.cut_3D(n.compute_center()[0], [80, 80, 4])
+        center = list(n.compute_center()[0])
+        # print(center,)
+        center[0] += move[0]
+        center[1] += move[1]
+        center[2] += move[2]
+        center = self.__check_center(center)
+
+        # print(center)
+        d.cut_3D(center, [100, 100, 4])
+
         d.window_reset()
 
         # print('bef:' + str(d.img.shape))
@@ -100,9 +122,11 @@ class ReadDicomDir():
         #         ax[x].imshow(image[:,:,x], cmap=plt.cm.gray)
         #         ax[x].set_title((x))
         # fig.show()
+        # input()
 
         self.__check_dir(savepath)
         np.save(os.path.join(savepath, filename + '.npy'), image)
+
         # print(os.path.join(savepath, filename + '.npy') + '.npy')
 
         # data = np.load(os.path.join(savepath, filename + '.npy'))
@@ -115,7 +139,10 @@ class ReadDicomDir():
         Need to rewrite the structure of the directory
         """
 
-        debug_count = 300  # for quick debug
+        debug_count = 30000  # for quick debug
+        flag = 0
+
+        da = (15, 15, 1) # Data Augment
 
         condata = self.__get_condata(os.path.join(self.bigpath, 'EXCEL deal', 'Condata.csv'))
         # get the condata in the type of dictionary, with the index as key and others strings as value
@@ -138,7 +165,7 @@ class ReadDicomDir():
                 continue
 
             patient_id = self.__get_id(dir_name)
-            print(patient_id)
+            # print(patient_id)
 
             # To produce the contact data for imgs.
             if patient_id in condata:
@@ -146,48 +173,54 @@ class ReadDicomDir():
             else:
                 i_contdata = self.default
 
-            # for saving queue in the csv:
-            Arter = ''
-            Delay = ''
-            Portal = ''
 
-            # \MVI-ROI\963245-W
-            save_path = os.path.join(self.dire, dir_name)
-            for filename in os.listdir(dir_now):
-                # 963245Delayed phase-W
-                dir_now_2 = os.path.join(dir_now, filename)
-                # \MVI-ROI\963245-W\963245Delayed phase-W
+            # This loop is for data agumentation.
+            for cid, center in enumerate([(0, 0, 0), (da[0], -da[1], 0), (da[0], da[1], 0), (-da[0], -da[1], 0), (-da[0], da[1], 0), (da[0], -da[1], da[2]), (da[0], da[1], da[2]), (-da[0], -da[1], da[2]), (-da[0], da[1], da[2])]):
 
-                save_path_2 = os.path.join(save_path, filename)
-                if not os.path.isdir(dir_now_2):
-                    continue
+                # for saving queue in the csv:
+                Arter = ''
+                Delay = ''
+                Portal = ''
 
-                idic = DicomDealer(dir_now_2)
+                # \MVI-ROI\963245-W
+                save_path = os.path.join(self.dire, dir_name)
+                for filename in os.listdir(dir_now):
+                    # 963245Delayed phase-W
+                    dir_now_2 = os.path.join(dir_now, filename)
+                    # \MVI-ROI\963245-W\963245Delayed phase-W
 
-                for sub_filename in os.listdir(dir_now_2):
-                    # This subfile is just for nii
-                    if sub_filename.split('.')[-1] == 'gz' or sub_filename.split('.')[-1] == 'nii':
-                        # self.__write_nii(dir_now_2 + '/' + sub_filename, self.label_save_dir + '/' + save_path_2)
-                        inii = NiiDealer(dir_now_2 + '/' + sub_filename)
+                    save_path_2 = os.path.join(save_path, filename)
+                    if not os.path.isdir(dir_now_2):
+                        continue
 
-                        self.deal_pair(idic, inii, os.path.join(self.image_save_dir, save_path), filename=filename)
+                    idic = DicomDealer(dir_now_2)
 
-                        if 'A' in filename:
-                            Arter = os.path.join(self.image_save_dir, save_path_2 + '.npy') + ',' + os.path.join(
-                                self.label_save_dir, save_path_2 + '.npy')
+                    for sub_filename in os.listdir(dir_now_2):
+                        # This subfile is just for nii
+                        if sub_filename.split('.')[-1] == 'gz' or sub_filename.split('.')[-1] == 'nii':
+                            inii = NiiDealer(dir_now_2 + '/' + sub_filename)
 
-                        elif 'D' in filename:
-                            Delay = os.path.join(self.image_save_dir, save_path_2 + '.npy') + ',' + os.path.join(
-                                self.label_save_dir, save_path_2 + '.npy')
+                            self.deal_pair(idic, inii, os.path.join(self.image_save_dir, save_path), filename=filename + str(cid), move=center)
 
-                        elif 'P' in filename:
-                            Portal = os.path.join(self.image_save_dir, save_path_2 + '.npy') + ',' + os.path.join(
-                                self.label_save_dir, save_path_2 + '.npy')
+                            if 'A' in filename:
+                                Arter = os.path.join(self.image_save_dir, save_path_2 + str(cid) + '.npy') + ',' + os.path.join(
+                                    self.label_save_dir, save_path_2 + '.npy')
 
-                        break
+                            elif 'D' in filename:
+                                Delay = os.path.join(self.image_save_dir, save_path_2 + str(cid) + '.npy') + ',' + os.path.join(
+                                    self.label_save_dir, save_path_2 + '.npy')
 
-            f.write(str(patient_id) + ',' + self.yon + ',' + Arter + ',' + Delay + ',' + Portal + ',' + i_contdata)
-            # print('debug:' + str(patient_id) + ',' + self.yon + ',' + Arter + ',' + Delay + ',' + Portal + ',' + i_contdata)
+                            elif 'P' in filename:
+                                Portal = os.path.join(self.image_save_dir, save_path_2 + str(cid) + '.npy') + ',' + os.path.join(
+                                    self.label_save_dir, save_path_2 + '.npy')
+
+                            break
+
+                f.write(str(patient_id) + ',' + self.yon + ',' + Arter + ',' + Delay + ',' + Portal + ',' + i_contdata)
+                # These two lines to comfix all the data together to make it bigger
+                # f.write(str(patient_id) + ',' + self.yon + ',' + Delay + ',' + Delay + ',' + Portal + ',' + i_contdata)
+                # f.write(str(patient_id) + ',' + self.yon + ',' + Portal + ',' + Delay + ',' + Portal + ',' + i_contdata)
+                print('debug:' + str(patient_id) + ',' + self.yon + ',' + Arter + ',' + Delay + ',' + Portal + ',' + i_contdata)
         f.close()
 
 
