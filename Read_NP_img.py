@@ -18,7 +18,7 @@ def show_3D_npimg(img):
 
 
 if __name__ == '__main__':
-    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897FAN ZHEN KUAN\\Portal venou phase1_ud.npy')
-    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897FAN ZHEN KUAN\\Portal venou phase1.npy')
-    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897FAN ZHEN KUAN\\Portal venou phase1_r270.npy')
-    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897FAN ZHEN KUAN\\Portal venou phase1_udr180.npy')
+    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897\\Portal venou phase1_ud.npy')
+    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897\\Portal venou phase1.npy')
+    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897\\Portal venou phase1_r270.npy')
+    show_3D_npimg('D:\\Memory\\Year.JiHai\\Workshop\\DataPreprocessing\\ImageSaveRadiomics\\Non-MVI ROI\\01305897\\Portal venou phase1_udr180.npy')
